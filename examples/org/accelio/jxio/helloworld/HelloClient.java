@@ -41,17 +41,18 @@ public class HelloClient {
 	public int exitStatus = 1;
 
 	public static void main(String[] args) {
-		if (args.length < 2) {
+		if (args.length < 3) {
 			usage();
 			return;
 		}
 
 		final String serverhostname = args[0];
-		final int port = Integer.parseInt(args[1]);
+		final String transport = args[1];
+		final int port = Integer.parseInt(args[2]);
 
 		URI uri = null;
 		try {
-			uri = new URI("rdma://" + serverhostname + ":" + port + "/");
+			uri = new URI(transport + "://" + serverhostname + ":" + port + "/");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			return;
@@ -100,7 +101,7 @@ public class HelloClient {
 	}
 
 	public static void usage() {
-		LOG.info("Usage: ./runHelloServer.sh <SERVER_IPADDR> [<PORT>]");
+		LOG.info("Usage: ./runHelloServer.sh <tcp|rdma> <SERVER_IPADDR> [<PORT>]");
 	}
 
 	class MyClientCallbacks implements ClientSession.Callbacks {
