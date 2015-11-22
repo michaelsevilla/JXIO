@@ -65,8 +65,8 @@ public class HelloServer {
 			return;
 		}
 
-		final String serverhostname = args[0];
-		final String transport = args[1];
+		final String transport = args[0];
+		final String serverhostname = args[1];
 		final int port = Integer.parseInt(args[2]);
 
 		URI uri = null;

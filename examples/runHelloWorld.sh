@@ -16,24 +16,30 @@ fi
 
 # Check arguments
 if [ -z $1 ]; then
-	echo -e "$0 ERROR: Missig first parameter. Should be a 'server' or 'client'.\n"
+	echo -e "$0 ERROR: Missing first parameter. Should be a 'server' or 'client'.\n"
 	exit 1
 fi
 if [ -z $2 ]; then
-	echo -e "$0 ERROR: Missig second parameter. Should be a server IP.\n"
+	echo -e "$0 ERROR: Missing second parameter. Should be a 'tcp' or 'rdma'.\n"
 	exit 1
 fi
 if [ -z $3 ]; then
-	echo -e "$0 ERROR: Missig third parameter. Should be a server port.\n"
+	echo -e "$0 ERROR: Missing third parameter. Should be a server IP.\n"
+	exit 1
+fi
+if [ -z $4 ]; then
+	echo -e "$0 ERROR: Missing fourth parameter. Should be a server port.\n"
 	exit 1
 fi
 
 # Get server or client side
 SIDE=$1
+# Get server connection type
+CONN=$2
 # Get machine IP
-IP=$2
+IP=$3
 # Configure Port
-PORT=$3
+PORT=$4
 
 # Compile
 echo -e "\nCompiling JAVA files...."
@@ -63,4 +69,5 @@ fi
 
 # Run the tests
 echo -e "\nRunning ${APPLICATION_NAME} side test..."
-java -Dlog4j.configuration=org/accelio/jxio/log4j.properties.jxio -cp "$COBERTURA_JAR_PATH:../bin/jxio.jar:../src/lib/commons-logging.jar:../src/lib/log4j-1.2.15.jar:." $java_coverage_props $APPLICATION $IP $PORT
+java -Dlog4j.configuration=org/accelio/jxio/log4j.properties.jxio -cp "$COBERTURA_JAR_PATH:../bin/jxio.jar:../src/lib/commons-logging.jar:../src/lib/log4j-1.2.15.jar:." $java_coverage_props $APPLICATION $CONN $IP $PORT
+
