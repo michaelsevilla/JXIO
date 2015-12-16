@@ -69,5 +69,6 @@ fi
 
 # Run the tests
 echo -e "\nRunning ${APPLICATION_NAME} side test..."
+echo java -Dlog4j.configuration=org/accelio/jxio/log4j.properties.jxio -cp "$COBERTURA_JAR_PATH:../bin/jxio.jar:../src/lib/commons-logging.jar:../src/lib/log4j-1.2.15.jar:." $java_coverage_props $APPLICATION $CONN $IP $PORT
 java -Dlog4j.configuration=org/accelio/jxio/log4j.properties.jxio -cp "$COBERTURA_JAR_PATH:../bin/jxio.jar:../src/lib/commons-logging.jar:../src/lib/log4j-1.2.15.jar:." $java_coverage_props $APPLICATION $CONN $IP $PORT
 

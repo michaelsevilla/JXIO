@@ -64,7 +64,6 @@ public class HelloServer {
 			usage();
 			return;
 		}
-
 		final String transport = args[0];
 		final String serverhostname = args[1];
 		final int port = Integer.parseInt(args[2]);
@@ -152,8 +151,8 @@ public class HelloServer {
 				LOG.error(str);
 			}
 			// Comment here if case you don't want to exit the server, stop the EQH
-			LOG.info("Stopping the main EQH loop...");
-			eqh.stop();
+			//LOG.info("Stopping the main EQH loop...");
+			//eqh.stop();
 		}
 
 		public boolean onMsgError(Msg msg, EventReason reason) {
