@@ -58,13 +58,45 @@ public class HelloClient {
 			return;
 		}
 
-		HelloClient client = new HelloClient();
+		final HelloClient client = new HelloClient();
 		client.connect(uri);
-		client.run();
 
-		LOG.info("Client is releasing JXIO resources and exiting");
-		client.releaseResources();
-		System.exit(client.exitStatus);
+		/** Queue up some requests */
+		client.addToQueue("Hello, Mike"); // ~ fexists
+		client.addToQueue("Hello, Bob");  // ~ create
+
+		/** Spawn thread 2 to run the Event Queue Handler */
+		Runnable thread2 = new Runnable() {
+			public void run() {
+				LOG.info("[Thread 2] Starting EQH...");
+				client.eqh.run();
+			}
+		};
+		(new Thread(thread2)).start();
+		
+		/** Thread 1 continually adds messages to the Event Queue Handler */
+		while(true) {
+
+			// Uncomment this and one message gets in the EQH
+			//LOG.info("[Thread 1] Adding new message...");
+			//client.addToQueue("Hello, Sam"); // ~ write
+
+			try {
+				LOG.info("[Thread 1] Sleeping for 1 second...");
+				Thread.sleep(1000); 
+			} catch(InterruptedException ex) { Thread.currentThread().interrupt();
+				Thread.currentThread().interrupt();
+			}		
+
+			// Uncomment this and the message never gets in the EQH
+			LOG.info("[Thread 1] Adding new message...");
+			client.addToQueue("Hello, Sam"); // ~ write
+		}
+		
+		/** Cleanup */
+		//LOG.info("Client is releasing JXIO resources and exiting");
+		//client.releaseResources();
+		//System.exit(client.exitStatus);
 	}
 
 	HelloClient() {
@@ -75,15 +107,16 @@ public class HelloClient {
 	public void connect(URI uri) {
 		LOG.info("Try to establish a new session to '" + uri + "'");
 		this.client = new ClientSession(eqh, uri, new MyClientCallbacks(this));
-
+	}
+	public void addToQueue(String m) {
 		Msg msg = this.mp.getMsg();
 		try {
-			msg.getOut().put("Hello Server".getBytes("UTF-8"));
+			msg.getOut().put(m.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			// Just suppress the exception handling in this demo code
 		}
 		try {
-			client.sendRequest(msg);
+			this.client.sendRequest(msg);
 		} catch (IOException e) {
 			//all exceptions thrown extend IOException
 			LOG.error(e.toString());
@@ -128,8 +161,8 @@ public class HelloClient {
 
 			msg.returnToParentPool();
 
-			LOG.info("Closing the session...");
-			this.client.client.close();
+			//LOG.info("Closing the session...");
+			//this.client.client.close();
 
 			exitStatus = 0; // Success, we got our message response back
 		}
@@ -142,7 +175,7 @@ public class HelloClient {
 				this.client.exitStatus = 1; // Failure on any kind of error
 				LOG.error(str);
 			}
-			this.client.eqh.stop();
+			//this.client.eqh.stop();
 		}
 
 		public void onMsgError(Msg msg, EventReason reason) {

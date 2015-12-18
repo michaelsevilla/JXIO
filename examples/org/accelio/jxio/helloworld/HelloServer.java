@@ -113,7 +113,7 @@ public class HelloServer {
 		}
 
 		public void onRequest(Msg msg) {
-			LOG.info("[SUCCESS] Got a message request! Prepare the champagne!");
+			//LOG.info("[SUCCESS] Got a message request! Prepare the champagne!");
 
 			// Read message String
 			byte ch;
